@@ -1,0 +1,22 @@
+int pin = 13;                      
+volatile int state = HIGH;
+volatile int count = 0;
+volatile boolean happen=false;
+void setup()
+{
+  pinMode(pin, OUTPUT);
+  attachInterrupt(0, blink, FALLING);
+}
+void loop()
+{
+  digitalWrite(pin, state);
+  if(happen)
+  {Serial.println(count);
+  happen=false;
+  }
+}            
+void blink()
+{ count=count+1;
+  state = !state;
+  happen=true;
+}
