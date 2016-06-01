@@ -1,0 +1,79 @@
+#define RED 6
+#define GREEN 5
+#define BLUE 3
+float R = 0;
+float G = 0;
+float B = 0;
+unsigned const int baudRate = 9600;
+
+void setup() {
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE, OUTPUT);
+  Serial.begin(baudRate);
+  Serial.print("Enter 'M' for color Mixing\n");
+}
+
+void loop() {
+  if (Serial.available()) {
+    char c = Serial.read();
+    if (c == 'M') {
+      Serial.println("|-------------------------------|");
+      Serial.println("|      =>Color 'M'ixing!<=      |");
+      Serial.println("| How many cups of RED color?   |");
+      R = getTheColorStrength();
+      Serial.print("| Red Cups   = ");
+      Serial.println(R);
+      Serial.println("| How many cups of GREEN color? |");
+      G = getTheColorStrength();
+      Serial.print("| Green Cups = ");
+      Serial.println(G);
+      Serial.println("| How many cups of BLUE color?  |");
+      B = getTheColorStrength();
+      Serial.print("| Blue Cups  = ");
+      Serial.println(B);
+      giveSummary();
+    } else {
+      Serial.println("Type 'M' for Color Mixing\n");
+    }
+  }
+  analogWrite(RED, R);
+  analogWrite(GREEN, G);
+  analogWrite(BLUE, B);
+}
+float getTheColorStrength() {
+  char inData[20];
+  float f = 0;
+  int x = 0;
+  while(x<1) {
+    String str;
+    if(Serial.available()) {
+      delay(100);
+      int i=0;
+      while(Serial.available()>0) {
+        char inByte = Serial.read();
+        str = str + inByte;
+        inData[i]=inByte;
+        i+=1;
+        x=2;
+      }
+      f = atof(inData);
+      memset(inData,0,sizeof(inData));
+    }
+  }//End while x<1.
+  return f;
+}
+
+void giveSummary() {
+  Serial.println("|_______________________________|");
+  Serial.println("|    =>Color Ratio Entered<=    |"); 
+  Serial.print("| R: ");
+  Serial.println(R);
+  Serial.print("| G: ");
+  Serial.println(G);
+  Serial.print("| B: ");
+  Serial.println(B);
+  Serial.println("|    =>Check RGB LED Color<=    |");
+  Serial.println("|_______________________________|");
+  Serial.println("|-------------------------------|");
+}
